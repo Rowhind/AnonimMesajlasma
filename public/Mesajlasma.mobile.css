@@ -1,0 +1,164 @@
+:root{
+    --bg0:#050718;
+    --glass: rgba(8, 10, 30, .55);
+    --stroke: rgba(255,255,255,.10);
+    --text: #e9ecff;
+    --muted: rgba(233,236,255,.70);
+    --shadow: 0 22px 75px rgba(0,0,0,.55);
+  }
+  
+  *{ box-sizing:border-box; }
+  html, body{ width:100%; height:100%; overflow-x:hidden; }
+  body{
+    margin:0;
+    min-height:100dvh;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    background: var(--bg0);
+    color: var(--text);
+  }
+  
+  /* arkaplan */
+  .bg{ position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background: radial-gradient(60% 55% at 50% 40%, rgba(0,0,0,.12), rgba(0,0,0,.72) 70%),
+                linear-gradient(to bottom, rgba(5,7,24,.55), rgba(5,7,24,.92));
+  }
+  .glow{ position:fixed; inset:0; z-index:-1; pointer-events:none; filter: blur(40px); opacity:.55;
+    background: radial-gradient(circle at 18% 55%, rgba(76,255,155,.30), transparent 40%),
+                radial-gradient(circle at 84% 40%, rgba(47,225,255,.26), transparent 42%),
+                radial-gradient(circle at 55% 18%, rgba(179,107,255,.24), transparent 40%);
+  }
+  
+  .mApp{
+    min-height:100dvh;
+    display:block;
+  }
+  
+  /* iki ekran */
+  .mView{ min-height:100dvh; display:none; }
+  body.mode-list #mobileListView{ display:block; }
+  body.mode-chat #mobileChatView{ display:flex; flex-direction:column; }
+  
+  /* LIST VIEW */
+  .mTop{
+    position: sticky;
+    top:0;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 14px 14px 10px;
+    background: rgba(5,7,24,.55);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .mTitle{ font-weight: 1000; letter-spacing:.4px; }
+  .mDots{
+    width:38px; height:38px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.10);
+    background: rgba(10,12,35,.35);
+    color: rgba(233,236,255,.92);
+    font-size:22px;
+  }
+  
+  .mSearch{ padding: 10px 14px; }
+  #mSearchInput{
+    width:100%;
+    padding: 12px 12px;
+    border-radius: 14px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(10,12,35,.38);
+    color: rgba(233,236,255,.92);
+    outline:none;
+    font-size:16px; /* iOS zoom engeli */
+  }
+  
+  .mUsers{
+    padding: 8px 10px 18px;
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+  }
+  
+  /* kullanıcı satırı (JS bunu kullanırsa güzel görünür) */
+  .mUserRow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(10,12,35,.35);
+  }
+  .mUserName{
+    font-weight: 900;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* CHAT VIEW */
+  .mChatHeader{
+    position: sticky;
+    top:0;
+    z-index:5;
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    padding: 12px 12px;
+    background: rgba(5,7,24,.55);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .mBack{
+    width:40px; height:40px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,.10);
+    background: rgba(10,12,35,.35);
+    color: rgba(233,236,255,.92);
+    font-size:18px;
+  }
+  .mChatWith{
+    font-weight: 1000;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .mChatBody{
+    flex:1;
+    padding: 12px;
+    overflow:auto;
+    display:flex;
+    flex-direction:column;
+    gap: 12px;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mComposer{
+    display:flex;
+    gap: 10px;
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    background: rgba(5,7,24,.35);
+    backdrop-filter: blur(10px);
+  }
+  #msgInput{
+    flex:1;
+    padding: 12px 12px;
+    border-radius: 16px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(10,12,35,.38);
+    color: rgba(233,236,255,.92);
+    outline:none;
+    font-size:16px;
+  }
+  .mSend{
+    padding: 12px 14px;
+    border-radius: 16px;
+    border:1px solid rgba(76,255,155,.55);
+    background: rgba(76,255,155,.12);
+    color: rgba(233,236,255,.92);
+    font-weight: 900;
+  }
+  

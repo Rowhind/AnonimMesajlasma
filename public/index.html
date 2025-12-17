@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yönlendiriliyor...</title>
+</head>
+<body>
+<script>
+  const isMobile =
+    matchMedia("(max-width: 768px)").matches ||
+    /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(navigator.userAgent);
+
+  // mobile → login.mobile.html
+  // pc → login.html
+  location.replace(isMobile ? "/login.mobile.html" : "/login.html");
+</script>
+</body>
+</html>

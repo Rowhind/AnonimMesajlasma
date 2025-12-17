@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesajlaşma</title>
+  <link rel="stylesheet" href="Mesajlasma.mobile.css" />
+</head>
+<body class="mode-list">
+
+  <div class="bg"></div>
+  <div class="glow"></div>
+
+  <div class="mApp">
+
+    <!-- ========== LİSTE EKRANI ========== -->
+    <section id="mobileListView" class="mView listView">
+      <header class="mTop">
+        <div class="mTitle">Sohbetler</div>
+        <button class="mDots" id="mMenuBtn" aria-label="Menü">⋯</button>
+      </header>
+
+      <div class="mSearch">
+        <input id="mSearchInput" type="text" placeholder="Ara..." autocomplete="off" />
+      </div>
+
+      <div id="mUsersList" class="mUsers">
+        <!-- JS buraya kullanıcıları basacak -->
+      </div>
+    </section>
+
+    <!-- ========== CHAT EKRANI ========== -->
+    <section id="mobileChatView" class="mView chatView">
+      <header class="mChatHeader">
+        <button id="mBackBtn" class="mBack" aria-label="Geri">←</button>
+        <div class="mChatWith" id="chatWith">Sohbet</div>
+      </header>
+
+      <div id="chatBody" class="mChatBody">
+        <!-- JS mesajları buraya basacak -->
+      </div>
+
+      <div class="mComposer">
+        <input id="msgInput" type="text" placeholder="Mesaj yaz..." autocomplete="off" />
+        <button id="sendBtn" class="mSend">Gönder</button>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="Mesajlasma.js" defer></script>
+</body>
+</html>

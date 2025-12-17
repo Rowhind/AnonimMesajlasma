@@ -1,13 +1,30 @@
-// ====== ELEMENTS ======
-const chat = document.getElementById("chat");
+// ====== ELEMENTS (desktop + mobile uyumlu) ======
+const chat =
+  document.getElementById("chat") ||
+  document.getElementById("chatBody"); // mobile/desktop farkı için
+
 const input = document.getElementById("msgInput");
 const sendBtn = document.getElementById("sendBtn");
-const userListEl = document.getElementById("userList");
-const userSearch = document.getElementById("userSearch");
+
+const userListEl =
+  document.getElementById("userList") ||
+  document.getElementById("mUsersList"); // WhatsApp mobile list
+
+const userSearch =
+  document.getElementById("userSearch") ||
+  document.getElementById("mSearchInput");
+
 const chatWithEl = document.getElementById("chatWith");
 const startHint = document.getElementById("startHint");
 
-// Menüler
+// Mobil WhatsApp akışı için (varsa)
+const mobileListView = document.getElementById("mobileListView");
+const mobileChatView = document.getElementById("mobileChatView");
+const backBtn =
+  document.getElementById("mBackBtn") ||
+  document.getElementById("backBtn"); // senin önceki mobil HTML'inde backBtn vardı
+
+// Menüler (desktop’ta var, mobile’da yok olabilir)
 const leftMenuBtn = document.getElementById("leftMenuBtn");
 const leftMenu = document.getElementById("leftMenu");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -16,9 +33,36 @@ const chatMenuBtn = document.getElementById("chatMenuBtn");
 const chatMenu = document.getElementById("chatMenu");
 const clearChatBtn = document.getElementById("clearChatBtn");
 
+// ====== helpers: mobile mode ======
+function isMobileUI() {
+  // mobil whatsapp şablonu varsa
+  if (mobileListView || mobileChatView) return true;
+  // dosya adı .mobile ise de mobil say
+  if (location.pathname.toLowerCase().includes("mobile")) return true;
+  return false;
+}
+
+function goListMode() {
+  if (!isMobileUI()) return;
+  document.body.classList.remove("mode-chat");
+  document.body.classList.add("mode-list");
+}
+
+function goChatMode() {
+  if (!isMobileUI()) return;
+  document.body.classList.remove("mode-list");
+  document.body.classList.add("mode-chat");
+}
+
+// back butonu varsa bağla
+if (backBtn) backBtn.addEventListener("click", goListMode);
+
 // ====== nickname ======
 const myNick = sessionStorage.getItem("nickname");
-if (!myNick) location.href = "login.html";
+if (!myNick) {
+  const goLogin = isMobileUI() ? "login.mobile.html" : "login.html";
+  location.href = goLogin;
+}
 
 let activeUser = null;
 
@@ -38,8 +82,8 @@ function avatarUrl(seed) {
 }
 
 function closeMenus() {
-  leftMenu.classList.remove("show");
-  chatMenu.classList.remove("show");
+  if (leftMenu) leftMenu.classList.remove("show");
+  if (chatMenu) chatMenu.classList.remove("show");
 }
 
 function getThreadKey(m) {
@@ -48,6 +92,8 @@ function getThreadKey(m) {
 }
 
 function renderThread(otherNick) {
+  if (!chat) return;
+
   chat.innerHTML = "";
   const arr = inbox.get(otherNick) || [];
 
@@ -85,9 +131,10 @@ socket.on("users_list", (names) => {
   // aktif seçili kişi offline olduysa düşür
   if (activeUser && !users.some(u => u.nickname === activeUser)) {
     activeUser = null;
-    chatWithEl.textContent = "Kimse seçilmedi";
-    chat.innerHTML = "";
+    if (chatWithEl) chatWithEl.textContent = "Kimse seçilmedi";
+    if (chat) chat.innerHTML = "";
     if (startHint) startHint.style.display = "block";
+    if (isMobileUI()) goListMode();
   }
 });
 
@@ -118,8 +165,10 @@ socket.on("private_message", (m) => {
   console.log("📩 yeni mesaj (unread arttı):", m);
 });
 
-// ====== render users ======
+// ====== render users (desktop + mobile) ======
 function renderUsers(list) {
+  if (!userListEl) return;
+
   userListEl.innerHTML = "";
 
   if (list.length === 0) {
@@ -131,25 +180,39 @@ function renderUsers(list) {
     return;
   }
 
+  const mobile = isMobileUI() && (userListEl.id === "mUsersList" || !!mobileListView);
+
   list.forEach(u => {
     const row = document.createElement("div");
-    row.className = "userRow" + (activeUser === u.nickname ? " active" : "");
+    const isActive = activeUser === u.nickname;
+
+    // mobilde farklı class’lar (mUserRow/mUserName) daha iyi görünür
+    row.className = (mobile ? "mUserRow" : "userRow") + (isActive ? " active" : "");
     row.dataset.nick = u.nickname;
 
     const count = unread.get(u.nickname) || 0;
 
-    row.innerHTML = `
-      <img class="avatarImg" alt="" src="${avatarUrl(u.nickname)}">
-      <div class="userName">${u.nickname}</div>
-      ${count > 0 ? `<div class="badge">${count}</div>` : ``}
-    `;
+    if (mobile) {
+      row.innerHTML = `
+        <img class="avatarImg" alt="" src="${avatarUrl(u.nickname)}">
+        <div class="mUserName">${u.nickname}</div>
+        ${count > 0 ? `<div class="badge">${count}</div>` : ``}
+      `;
+    } else {
+      row.innerHTML = `
+        <img class="avatarImg" alt="" src="${avatarUrl(u.nickname)}">
+        <div class="userName">${u.nickname}</div>
+        ${count > 0 ? `<div class="badge">${count}</div>` : ``}
+      `;
+    }
 
     row.addEventListener("click", () => {
-      document.querySelectorAll(".userRow").forEach(x => x.classList.remove("active"));
+      // desktop active class temizliği
+      document.querySelectorAll(".userRow, .mUserRow").forEach(x => x.classList.remove("active"));
       row.classList.add("active");
 
       activeUser = u.nickname;
-      chatWithEl.textContent = u.nickname;
+      if (chatWithEl) chatWithEl.textContent = u.nickname;
 
       if (startHint) startHint.style.display = "none";
 
@@ -159,6 +222,9 @@ function renderUsers(list) {
 
       // O kişiyle olan mesajları göster
       renderThread(activeUser);
+
+      // WhatsApp mobile: chat ekranına geç
+      if (mobile) goChatMode();
     });
 
     userListEl.appendChild(row);
@@ -166,6 +232,7 @@ function renderUsers(list) {
 }
 
 function filterUsers() {
+  if (!userSearch) return;
   const q = userSearch.value.trim().toLowerCase();
   const filtered = users.filter(u => u.nickname.toLowerCase().includes(q));
   renderUsers(filtered);
@@ -173,6 +240,8 @@ function filterUsers() {
 
 // ====== messages UI ======
 function addMyMessage(text) {
+  if (!chat) return;
+
   const row = document.createElement("div");
   row.className = "bubbleRow me";
   row.innerHTML = `
@@ -190,6 +259,8 @@ function addMyMessage(text) {
 }
 
 function addOtherMessage(text, nick) {
+  if (!chat) return;
+
   const row = document.createElement("div");
   row.className = "bubbleRow other";
   row.innerHTML = `
@@ -209,11 +280,13 @@ function addOtherMessage(text, nick) {
 
 // ====== send ======
 function send() {
+  if (!input) return;
+
   const text = input.value.trim();
   if (!text) return;
 
   if (!activeUser) {
-    addOtherMessage("Önce soldan bir kullanıcı seçmelisin.", "Sistem");
+    addOtherMessage("Önce bir kullanıcı seçmelisin.", "Sistem");
     input.value = "";
     return;
   }
@@ -221,7 +294,7 @@ function send() {
   // UI'a bas
   addMyMessage(text);
 
-  // inbox'a da yaz (sayfayı yenileyene kadar aynı sohbet açık kalsın)
+  // inbox'a da yaz
   const m = { from: myNick, to: activeUser, text, ts: Date.now() };
   if (!inbox.has(activeUser)) inbox.set(activeUser, []);
   inbox.get(activeUser).push(m);
@@ -234,39 +307,58 @@ function send() {
 }
 
 // Enter ile gönder
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    send();
-  }
-});
-sendBtn.addEventListener("click", send);
+if (input) {
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      send();
+    }
+  });
+}
 
-// ====== menus ======
-leftMenuBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  leftMenu.classList.toggle("show");
-  chatMenu.classList.remove("show");
-});
+if (sendBtn) sendBtn.addEventListener("click", send);
 
-chatMenuBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  chatMenu.classList.toggle("show");
-  leftMenu.classList.remove("show");
-});
+// ====== menus (varsa) ======
+if (leftMenuBtn && leftMenu) {
+  leftMenuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    leftMenu.classList.toggle("show");
+    if (chatMenu) chatMenu.classList.remove("show");
+  });
+}
+
+if (chatMenuBtn && chatMenu) {
+  chatMenuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    chatMenu.classList.toggle("show");
+    if (leftMenu) leftMenu.classList.remove("show");
+  });
+}
 
 document.addEventListener("click", closeMenus);
 
-logoutBtn.addEventListener("click", () => {
-  sessionStorage.removeItem("nickname");
-  location.href = "login.html";
-});
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", () => {
+    sessionStorage.removeItem("nickname");
+    const goLogin = isMobileUI() ? "login.mobile.html" : "login.html";
+    location.href = goLogin;
+  });
+}
 
-clearChatBtn.addEventListener("click", () => {
-  chat.innerHTML = "";
-  if (startHint) startHint.style.display = "block";
-  closeMenus();
-});
+if (clearChatBtn) {
+  clearChatBtn.addEventListener("click", () => {
+    if (chat) chat.innerHTML = "";
+    if (startHint) startHint.style.display = "block";
+    closeMenus();
+  });
+}
 
 // Search
-userSearch.addEventListener("input", filterUsers);
+if (userSearch) userSearch.addEventListener("input", filterUsers);
+
+// mobilde sayfa ilk açılınca liste moduna geç
+if (isMobileUI()) {
+  if (!document.body.classList.contains("mode-chat")) {
+    document.body.classList.add("mode-list");
+  }
+}
