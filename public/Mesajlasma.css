@@ -12,27 +12,24 @@
   --shadow: 0 22px 75px rgba(0,0,0,.55);
 }
 
-/* Global reset */
-*{ box-sizing: border-box; }
-html, body { width: 100%; overflow-x: hidden; }
+/* ===== RESET ===== */
+*{ box-sizing:border-box; }
+html, body{ width:100%; height:100%; overflow-x:hidden; }
 body{
   margin:0;
-  min-height:100dvh; /* 100vh yerine */
+  min-height:100dvh;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
   color: var(--text);
   background: var(--bg0);
-
-  /* Eskiden overflow:hidden vardı -> mobilde scroll/klavye bug yapar */
-  overflow-y: auto;
+  overflow: hidden; /* desktop'ta body scroll kapalı: scroll içeride olacak */
 }
 
-/* Background */
+/* ===== BACKGROUND ===== */
 .bg{
-  position: fixed; inset:0; z-index:-4;
+  position: fixed; inset:0; z-index:-4; pointer-events:none;
   background:
     radial-gradient(60% 55% at 50% 40%, rgba(0,0,0,.10), rgba(0,0,0,.68) 70%),
     linear-gradient(to bottom, rgba(5,7,24,.60), rgba(5,7,24,.92));
-  pointer-events:none;
 }
 
 .grid{
@@ -76,15 +73,16 @@ body{
 }
 @keyframes scan{ from{transform:translateY(0)} to{transform:translateY(24px)} }
 
-/* Layout */
+/* ===== APP LAYOUT (DESKTOP) ===== */
 .app{
-  min-height:100dvh;     /* height:100vh yerine */
-  display:grid;
+  height: 100dvh;
+  display: grid;
   grid-template-columns: 320px 1fr;
   gap: 18px;
   padding: 18px;
 }
 
+/* panel her yerde flex column: scroll alanları için kritik */
 .panel{
   background: var(--glass);
   border: 1px solid var(--stroke);
@@ -92,7 +90,11 @@ body{
   box-shadow: var(--shadow);
   backdrop-filter: blur(12px);
   position: relative;
-  overflow:hidden;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* IMPORTANT */
 }
 .panel::after{
   content:"";
@@ -103,11 +105,10 @@ body{
   opacity:.35;
   pointer-events:none;
 }
+.panel > *{ position: relative; z-index: 2; } /* after üstüne çıkarmak için */
 
-/* Left */
+/* ===== LEFT (USERS) ===== */
 .roomsHeader{
-  position: relative;
-  z-index: 2;
   padding: 14px 14px 12px;
   border-bottom: 1px solid rgba(255,255,255,.08);
 }
@@ -126,19 +127,6 @@ body{
   color: rgba(233,236,255,.92);
 }
 
-.roomsList{
-  position: relative;
-  z-index: 2;
-  padding: 10px;
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-  height: calc(100% - 104px);
-  overflow:auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Search */
 .searchWrap{ width:100%; margin-top: 10px; }
 .searchInput{
   width:100%;
@@ -154,7 +142,18 @@ body{
   box-shadow: 0 0 16px rgba(47,225,255,.18);
 }
 
-/* User row */
+/* sol liste: flex ile büyüsün, scroll burada */
+.roomsList{
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 10px;
+  display:flex;
+  flex-direction:column;
+  gap: 10px;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .userRow{
   display:flex;
   align-items:center;
@@ -173,13 +172,6 @@ body{
   border-color: rgba(47,225,255,.35);
   box-shadow: 0 0 26px rgba(47,225,255,.10);
 }
-.userName{
-  font-weight: 900;
-  font-size: 14px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow: ellipsis;
-}
 .avatarImg{
   width: 44px;
   height: 44px;
@@ -189,17 +181,38 @@ body{
   box-shadow: 0 0 22px rgba(76,255,155,.10);
   flex: 0 0 auto;
 }
+.userName{
+  font-weight: 900;
+  font-size: 14px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.badge{
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  background: #ff3b3b;
+  color: #fff;
+}
 
-/* Right header */
+/* ===== RIGHT (CHAT) ===== */
 .chatHeader{
-  position: relative;
-  z-index: 2;
   padding: 14px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   border-bottom: 1px solid rgba(255,255,255,.08);
+  flex: 0 0 auto;
 }
+
 .chatHeaderLeft{
   display:flex; align-items:center; gap: 10px;
   min-width:0;
@@ -230,9 +243,8 @@ body{
   text-overflow: ellipsis;
   max-width: 240px;
 }
-.chatHeaderRight{ position: relative; z-index: 3; }
 
-/* Menüler */
+/* menüler (varsa) */
 .menuAnchor{ position: relative; }
 .dotsBtn{
   width: 38px;
@@ -246,7 +258,6 @@ body{
   display:grid;
   place-items:center;
   transition: .18s ease;
-  touch-action: manipulation;
 }
 .dotsBtn:hover{ transform: translateY(-1px); box-shadow: 0 0 18px rgba(47,225,255,.10); }
 
@@ -281,20 +292,19 @@ body{
   border-color: rgba(47,225,255,.18);
 }
 
-/* Chat body */
+/* ===== CHAT BODY (SCROLL HERE) ===== */
 .chatBody{
-  position: relative;
-  z-index: 2;
-  height: calc(100% - 64px - 86px);
-  padding: 14px;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow:auto;
+  padding: 14px;
   display:flex;
   flex-direction:column;
   gap: 12px;
   -webkit-overflow-scrolling: touch;
 }
 
-/* START HINT (animasyonlu) */
+/* start hint */
 .startHint{
   margin: auto;
   text-align:center;
@@ -384,17 +394,22 @@ body{
 .time{ white-space:nowrap; color: rgba(233,236,255,.55); }
 .msg{ margin:0; color: rgba(233,236,255,.92); line-height: 1.45; font-size: 14px; white-space: pre-wrap; }
 
-/* composer */
+/* ===== COMPOSER (ALWAYS BOTTOM) ===== */
 .composer{
-  position: relative;
-  z-index: 2;
-  height: 86px;
+  flex: 0 0 auto;
   padding: 14px;
   border-top: 1px solid rgba(255,255,255,.08);
   display:flex;
   gap: 12px;
   align-items:center;
+
+  position: sticky;
+  bottom: 0;
+  background: rgba(8,10,30,.85);
+  backdrop-filter: blur(10px);
+  z-index: 5;
 }
+
 .inputWrap{
   flex: 1;
   display:flex;
@@ -431,7 +446,6 @@ body{
   transition: .18s ease;
   position: relative;
   overflow:hidden;
-  touch-action: manipulation;
 }
 .send:hover{ transform: translateY(-1px); filter: brightness(1.06); }
 .send:active{ transform: translateY(1px) scale(.99); }
@@ -442,54 +456,33 @@ body{
 .roomsList::-webkit-scrollbar-thumb,
 .chatBody::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.10); border-radius: 999px; }
 
-/* badges */
-.userRow { position: relative; }
-.badge{
-  margin-left: auto;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 7px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  font-size: 12px;
-  font-weight: 800;
-  background: #ff3b3b;
-  color: #fff;
-}
-
-/* Responsive */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 920px){
+  body{ overflow:auto; } /* küçük ekranlarda güvenli */
   .app{
+    height: auto;
+    min-height: 100dvh;
     grid-template-columns: 1fr;
     padding: 12px;
     gap: 12px;
+    overflow: visible;
   }
-  /* HTML'inde sol panelin class'ı .left ise kapanır */
   .left{ display:none; }
-  /* Bubbles mobilde biraz genişlesin */
   .bubble{ max-width: 92%; }
 }
 
 @media (max-width: 768px){
-  .chatHeader{ gap: 10px; }
   .chatWith{ max-width: 160px; }
 
   .composer{
+    position: sticky;
+    bottom: 0;
     height: auto;
     flex-direction: column;
     align-items: stretch;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
   }
 
-  .inputWrap{
-    padding: 12px;
-  }
-
-  #msgInput{
-    font-size: 16px; /* iOS zoom engeli */
-  }
-
-  .send{
-    width: 100%;
-  }
+  #msgInput{ font-size: 16px; }
+  .send{ width: 100%; }
 }

@@ -3,26 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mesajlaşma</title>
+  <title>Anonymous Messenger | Mobil</title>
+
   <link rel="stylesheet" href="Mesajlasma.mobile.css" />
   <link rel="icon" type="image/png" href="/favicon.png">
 </head>
-<body class="mode-list">
 
-  <div class="bg"></div>
-  <div class="glow"></div>
+<body class="mode-list">
+  <div class="bg" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
 
   <div class="mApp">
 
     <!-- ========== LİSTE EKRANI ========== -->
-    <section id="mobileListView" class="mView listView">
+    <section id="mobileListView" class="mView listView" aria-label="Sohbet Listesi">
       <header class="mTop">
         <div class="mTitle">Sohbetler</div>
-        <button class="mDots" id="mMenuBtn" aria-label="Menü">⋯</button>
+
+        <div class="mMenuWrap">
+          <button class="mDots" id="mMenuBtn" aria-label="Menü">⋯</button>
+
+          <!-- (İsteğe bağlı) Mobil menü -->
+          <div class="mMenu" id="mMenu" aria-hidden="true">
+            <button class="mMenuItem" id="mLogoutBtn">Oturumu Kapat</button>
+          </div>
+        </div>
       </header>
 
       <div class="mSearch">
-        <input id="mSearchInput" type="text" placeholder="Ara..." autocomplete="off" />
+        <input
+          id="mSearchInput"
+          type="text"
+          placeholder="Ara..."
+          autocomplete="off"
+          inputmode="text"
+        />
       </div>
 
       <div id="mUsersList" class="mUsers">
@@ -31,10 +46,12 @@
     </section>
 
     <!-- ========== CHAT EKRANI ========== -->
-    <section id="mobileChatView" class="mView chatView">
+    <section id="mobileChatView" class="mView chatView" aria-label="Sohbet">
       <header class="mChatHeader">
         <button id="mBackBtn" class="mBack" aria-label="Geri">←</button>
-        <div class="mChatWith" id="chatWith">Sohbet</div>
+
+        <!-- Mobilde ayrı ID: desktop ile çakışmasın -->
+        <div class="mChatWith" id="mChatWith">Sohbet</div>
       </header>
 
       <div id="chatBody" class="mChatBody">
@@ -42,7 +59,13 @@
       </div>
 
       <div class="mComposer">
-        <input id="msgInput" type="text" placeholder="Mesaj yaz..." autocomplete="off" />
+        <input
+          id="msgInput"
+          type="text"
+          placeholder="Mesaj yaz..."
+          autocomplete="off"
+          inputmode="text"
+        />
         <button id="sendBtn" class="mSend">Gönder</button>
       </div>
     </section>
