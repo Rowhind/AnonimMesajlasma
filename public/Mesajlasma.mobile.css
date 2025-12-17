@@ -161,4 +161,31 @@
     color: rgba(233,236,255,.92);
     font-weight: 900;
   }
-  
+  /* === Mobile user row fix: isim görünmeme sorunu === */
+.mUsers { width: 100%; }
+
+.mUserRow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+}
+
+.mUserName{
+  flex: 1;            /* isim alanı genişlesin */
+  min-width: 0;       /* ellipsis düzgün çalışsın */
+  color: var(--text); /* görünür olsun */
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* avatar da sabit kalsın */
+.avatarImg{
+  width:44px;
+  height:44px;
+  border-radius:16px;
+  flex: 0 0 auto;
+  display:block;
+}
