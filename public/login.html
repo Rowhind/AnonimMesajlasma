@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Takma Ad Seç | Anonymous Messenger</title>
+
+  <link rel="stylesheet" href="loginstyle.css">
+  <script src="loginscript.js" defer></script>
+</head>
+
+<body>
+  <!-- TOP NAV -->
+  <header class="topNav">
+    <a href="main.html" class="backBtn">← Geri</a>
+
+    <div class="navTitle">
+      ANONYMOUS<span>MESSENGER</span>
+    </div>
+
+    <!-- sağ taraf boş kalsın diye (simetri) -->
+    <div class="navSpacer"></div>
+  </header>
+
+  <!-- Arka plan efektleri -->
+  <div class="bg" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
+  <!-- içerik -->
+  <div class="loginWrap">
+    <!-- arkadaki glitch başlık -->
+    <div class="bgTitle" aria-hidden="true">
+      <span class="glitch" data-text="ANONYMOUS">ANONYMOUS</span><br>
+      <span class="glitch" data-text="MESSENGER">MESSENGER</span>
+    </div>
+
+    <!-- öndeki kart -->
+    <div class="loginCard">
+      <p class="subtitle">
+        Sohbete katılmak için geçici bir takma ad belirle.
+      </p>
+
+      <input
+        id="nicknameInput"
+        type="text"
+        placeholder="Takma adınızı yazın"
+        maxlength="16"
+        autocomplete="off"
+      />
+
+      <div id="error" class="error"></div>
+
+      <button id="startBtn" class="startBtn">
+        Sohbete Başla
+      </button>
+
+      <p class="hint">
+        Bu ad sadece bu oturum için geçerlidir.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

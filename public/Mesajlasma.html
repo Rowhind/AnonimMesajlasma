@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Messenger | Sohbet</title>
+  <link rel="stylesheet" href="Mesajlasma.css">
+  
+  
+
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="grid" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <div class="app">
+    <!-- LEFT -->
+    <aside class="panel left">
+      <div class="roomsHeader">
+        <div class="leftTop">
+          <h2>Aktif Kullanıcılar</h2>
+
+          <div class="menuAnchor">
+            <button id="leftMenuBtn" class="dotsBtn" title="Menü">⋯</button>
+            <div id="leftMenu" class="menuPop">
+              <button id="logoutBtn" class="menuItem">Oturumu Kapat</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="searchWrap">
+          <input id="userSearch" class="searchInput" type="text" placeholder="Kullanıcı ara..." />
+        </div>
+      </div>
+
+      <div class="roomsList" id="userList">
+        <!-- kullanıcılar JS ile dolacak -->
+      </div>
+    </aside>
+
+    <!-- RIGHT -->
+    <section class="panel right">
+      <div class="chatHeader">
+        <div class="chatHeaderLeft">
+          <div class="badgeLock">🔒 Bağlantı Güvenli</div>
+          <div class="chatWith" id="chatWith">Bir kullanıcı seç</div>
+        </div>
+
+        <div class="chatHeaderRight">
+          <div class="menuAnchor">
+            <button id="chatMenuBtn" class="dotsBtn" title="Sohbet Menüsü">⋯</button>
+            <div id="chatMenu" class="menuPop">
+              <button id="clearChatBtn" class="menuItem">Sohbeti Kendimden Sil</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chatBody" id="chat">
+        <!-- İlk açılışta animasyonlu yazı -->
+        <div class="startHint" id="startHint">
+          <div class="startHintTitle">Mesajlaşacak kişiyi seçiniz</div>
+          <div class="startHintSub">Soldaki listeden bir kullanıcıya dokunarak sohbeti başlat.</div>
+        </div>
+      </div>
+
+      <div class="composer">
+        <div class="inputWrap">
+          <span class="padlock">🔒</span>
+          <input id="msgInput" type="text" placeholder="Mesajınızı Yazın..." maxlength="300" />
+        </div>
+        <button class="send" id="sendBtn">GÖNDER</button>
+      </div>
+    </section>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  
+  <script src="Mesajlasma.js" defer></script>
+
+  
+
+</body>
+</html>

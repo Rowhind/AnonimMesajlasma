@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anonymous Messenger</title>
+
+  <link rel="stylesheet" href="mainstiller.css">
+  <script src="mainscript.js" defer></script>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="glow" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header>
+      <nav class="nav">
+        <a class="brand" href="#">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="brandText">
+            ANONYMOUS
+            <span>MESSENGER</span>
+          </div>
+        </a>
+
+        <div class="menu">
+          
+          <a href="#about">Hakkımızda</a>
+          <a href="#security">Güvenlik</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <div class="hero">
+        <h1 class="title">
+          <span class="glitch" data-text="ANONYMOUS">ANONYMOUS</span><br/>
+          <span class="glitch" data-text="MESSENGER">MESSENGER</span>
+        </h1>
+
+        <p class="subtitle">Gizli Kal, Bağlantı Kur.</p>
+
+        <div class="ctaRow">
+          <!-- Burayı main.html'e ya da login.html'e yönlendirebilirsin -->
+          <a class="cta" href="login.html" id="ctaBtn">Mesajlaşmaya Başla</a>
+        </div>
+      </div>
+    </main>
+
+    <div class="features">
+      <div class="feat">
+        <div class="ico" aria-hidden="true">🔒</div>
+        <div>
+          <h3>Tam Gizlilik</h3>
+          <p>Kayıt olmadan, anonim şekilde mesajlaş.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="ico" aria-hidden="true">🕵️</div>
+        <div>
+          <h3>Kayıt Yok</h3>
+          <p>Hesap açma derdi yok — anında başla.</p>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="ico" aria-hidden="true">🔐</div>
+        <div>
+          <h3>Uçtan Uca Şifreleme</h3>
+          <p>İletişim güvenliği için temel korumalar.</p>
+        </div>
+      </div>
+    </div>
+
+    <section class="about" id="about">
+      <div class="card">
+        <h2>Hakkımızda</h2>
+        <div style="color: rgba(233,236,255,.78); line-height:1.55;">
+          Anonymous Messenger; kayıt gerektirmeyen, oturumluk takma adla hızlı mesajlaşma deneyimi sunar.
+        </div>
+      </div>
+    </section>
+
+    <section class="security" id="security">
+      <div class="card">
+        <h2>Güvenlik</h2>
+        <div style="color: rgba(233,236,255,.78); line-height:1.55;">
+          Spam önleme, içerik filtreleri ve temel güvenlik kontrolleriyle güvenli bir deneyim hedeflenir.
+          <ul>
+            <li>Rate limiting (flood engeli)</li>
+            <li>XSS korunumu</li>
+            <li>Gerekirse raporlama sistemi</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  
+</body>
+</html>
