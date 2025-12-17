@@ -9,23 +9,27 @@ const { Server } = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 
+// ✅ Render için doğru PORT kullanımı
 const PORT = process.env.PORT || 3000;
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || `http://localhost:${PORT}`;
 
-app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+// ✅ CORS: Render/Local fark etmeden çalışsın diye "origin: true"
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-// public klasörünü tarayıcıya aç
+// ✅ public klasörünü tarayıcıya aç
 app.use(express.static(path.join(__dirname, "public")));
 
+// health check
 app.get("/health", (req, res) => res.json({ ok: true }));
 
+// ✅ Socket.IO CORS aynı mantık
 const io = new Server(server, {
-  cors: { origin: CLIENT_ORIGIN, credentials: true }
+  cors: { origin: true, credentials: true }
 });
 
-const socketToName = new Map();
-const nameToSocket = new Map();
+// online user maps
+const socketToName = new Map(); // socket.id -> nickname
+const nameToSocket = new Map(); // nickname -> socket.id
 
 function getOnlineUsers() {
   const names = Array.from(new Set(socketToName.values()));
@@ -43,10 +47,17 @@ io.on("connection", (socket) => {
     return;
   }
 
+  // aynı nickname ile ikinci kez girilirse eskisini düşür (isteğe bağlı ama pratik)
+  const oldSocketId = nameToSocket.get(nickname);
+  if (oldSocketId && oldSocketId !== socket.id) {
+    io.to(oldSocketId).emit("error_message", "Aynı nickname ile başka giriş yapıldı. Çıkış yapıldı.");
+    io.sockets.sockets.get(oldSocketId)?.disconnect(true);
+  }
+
   socketToName.set(socket.id, nickname);
   nameToSocket.set(nickname, socket.id);
 
-  socket.emit("users_list", getOnlineUsers());
+  // herkese kullanıcı listesini gönder
   io.emit("users_list", getOnlineUsers());
 
   socket.on("private_message", (payload) => {
@@ -54,9 +65,9 @@ io.on("connection", (socket) => {
     if (!from) return;
 
     const to = (payload?.to || "").toString().trim();
-    const text = (payload?.text || "").toString();
+    const text = (payload?.text || "").toString().trim();
 
-    if (!to || !text.trim()) return;
+    if (!to || !text) return;
 
     const targetSocketId = nameToSocket.get(to);
 
@@ -68,8 +79,10 @@ io.on("connection", (socket) => {
       ts: Date.now()
     };
 
+    // gönderen kendi ekranında da görsün
     socket.emit("private_message", messageObj);
 
+    // alıcı online ise ona gönder
     if (targetSocketId) {
       io.to(targetSocketId).emit("private_message", messageObj);
     } else {
@@ -98,5 +111,5 @@ function makeId() {
 }
 
 server.listen(PORT, () => {
-  console.log(`Server running: http://localhost:${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
